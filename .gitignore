@@ -6,5 +6,13 @@ dist/
 wheels/
 *.egg-info
 
+# Archivos de migración de Django
+*/migrations/*
+!*/migrations/__init__.py
+
+# Archivos de bloqueo generados por uv
+uv.lock
+
 # Virtual environments
 .venv
+.env
