@@ -39,7 +39,7 @@ def new_reservation():
         status="pending",
         total_price=500.00,
         client=client,  # Relación con el cliente
-        room_id=1,  # Suponiendo que ya tienes una habitación con ID 1
+        room_id=room.id,  # Suponiendo que ya tienes una habitación con ID 1
         created_at=datetime.now(),  # Asignar el valor de la fecha de creación
         updated_at=datetime.now(),
     )
@@ -51,3 +51,19 @@ def new_reservation():
 class TestReservation:
     def test_create_reservation(self, new_reservation):
         assert Reservation.objects.count() == 1
+
+    def test_verify_data_with_valid_length(self, new_reservation):
+        """
+        Verificar que la RESERVACION tiene datos con longitudes válidas
+        """
+        reservation = Reservation.objects.get(id=new_reservation.id)
+
+        # Diccionario de campos y sus longitudes máximas
+        field_lengths = {
+            "status": 9,
+        }
+
+        for field, max_length in field_lengths.items():
+            value = getattr(reservation, field)
+        assert len(value) <= max_length, f"El campo '{
+            field}' excede la longitud máxima de {max_length}"
