@@ -11,9 +11,15 @@ class Clients(models.Model):
     city = models.CharField(max_length=50)
     state = models.CharField(max_length=50)
     country = models.CharField(max_length=50)
-    email = models.EmailField(blank=True)
+    email = models.EmailField(blank=True, unique=True, null=True)
     phone = PhoneNumberField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def clean(self):
+        super().clean()
+
+        if self.email and Clients.objects.filter(email=self.email).exclude(id=self.id).exists():
+            raise ValidationError({"email": "El email debe ser único."})
 
     def __str__(self):
         return self.name
