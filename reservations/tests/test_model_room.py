@@ -1,4 +1,5 @@
 import pytest
+from decimal import Decimal
 from reservations.models import Room
 
 
@@ -43,3 +44,18 @@ class TestRoom:
             value = getattr(room, field)
         assert len(value) <= max_length, f"El campo '{
             field}' excede la longitud máxima de {max_length}"
+
+    def test_verify_type_data(self, new_room):
+        """
+        verifica que los datos son del tipo correcto
+        """
+
+        room = Room.objects.get(id=new_room.id)
+        assert type(room.number) is int
+        assert type(room.type) is str
+        assert type(room.is_reserved) is bool
+        assert type(room.status) is str
+        assert type(room.description) is str
+        assert type(room.capacity) is int
+        assert type(room.amenities) is dict
+        assert type(room.price_for_night) is Decimal
