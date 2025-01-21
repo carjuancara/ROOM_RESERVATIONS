@@ -59,3 +59,28 @@ class TestRoom:
         assert type(room.capacity) is int
         assert type(room.amenities) is dict
         assert type(room.price_for_night) is Decimal
+
+    def test_minimum_fields(self, new_room):
+        """
+        Verifica que los campos obligatorios tengan valores no vacíos
+        """
+        # Lista de campos obligatorios
+        MINIMUM_FIELDS = [
+            "number",
+            "type",
+            "price_for_night",
+            "status",
+            "description",
+            "capacity",
+            "amenities"
+        ]
+
+        # Verificar que cada campo obligatorio tiene un valor no vacío
+        for field in MINIMUM_FIELDS:
+            # Obtener el valor del campo
+            value = getattr(new_room, field, None)
+            assert value, f"El campo '{
+                field}' está vacío o no tiene un valor válido"
+
+        assert new_room.is_reserved != None
+        assert type(new_room.is_reserved) is bool
