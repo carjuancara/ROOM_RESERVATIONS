@@ -81,3 +81,26 @@ class TestClients:
         # Se espera que la validación falle debido a la restricción de unicidad
         with pytest.raises(ValidationError, match="El email debe ser único."):
             duplicate_client.full_clean()
+
+    def test_minimum_fields(self, new_client):
+        """
+        Verifica que los campos obligatorios tengan valores no vacíos
+        """
+        # Lista de campos obligatorios
+        MINIMUM_FIELDS = [
+            "name",
+            "lastname",
+            "document_number",
+            "street",
+            "city",
+            "state",
+            "country",
+            "email"
+        ]
+
+        # Verificar que cada campo obligatorio tiene un valor no vacío
+        for field in MINIMUM_FIELDS:
+            # Obtener el valor del campo
+            value = getattr(new_client, field, None)
+            assert value, f"El campo '{
+                field}' está vacío o no tiene un valor válido"
