@@ -26,3 +26,20 @@ class TestRoom:
         """
 
         assert Room.objects.count() == 1
+
+    def test_verify_room_data(self, new_room):
+        """
+        Verificar que la habitacion tiene datos con longitudes válidas
+        """
+        room = Room.objects.get(id=new_room.id)
+
+        # Diccionario de campos y sus longitudes máximas
+        field_lengths = {
+            "type": 6,
+            "status": 11,
+        }
+
+        for field, max_length in field_lengths.items():
+            value = getattr(room, field)
+        assert len(value) <= max_length, f"El campo '{
+            field}' excede la longitud máxima de {max_length}"
