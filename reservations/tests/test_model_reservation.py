@@ -1,6 +1,7 @@
 import pytest
 from reservations.models import Reservation, Clients, Room
-from datetime import datetime
+from datetime import datetime, date
+from decimal import Decimal
 
 
 @pytest.fixture
@@ -67,3 +68,16 @@ class TestReservation:
             value = getattr(reservation, field)
         assert len(value) <= max_length, f"El campo '{
             field}' excede la longitud máxima de {max_length}"
+
+    def test_verify_type_data(self, new_reservation):
+        """
+        verifica que los datos son del tipo correcto
+        """
+
+        reservation = Reservation.objects.get(id=new_reservation.id)
+        assert type(reservation.date_in) is date
+        assert type(reservation.date_out) is date
+        assert type(reservation.status) is str
+        assert type(reservation.total_price) is Decimal
+        assert type(reservation.created_at) is date
+        assert type(reservation.updated_at) is date
