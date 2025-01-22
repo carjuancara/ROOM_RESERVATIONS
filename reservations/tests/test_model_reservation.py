@@ -81,3 +81,26 @@ class TestReservation:
         assert type(reservation.total_price) is Decimal
         assert type(reservation.created_at) is date
         assert type(reservation.updated_at) is date
+
+    def test_minimum_fields(self, new_reservation):
+        """
+        Verifica que los campos obligatorios tengan valores no vacíos
+        """
+        # Lista de campos obligatorios
+        MINIMUM_FIELDS = [
+            "date_in",
+            "date_out",
+            "status",
+            "total_price",
+            "created_at",
+            "updated_at",
+            "client",
+            "room",
+        ]
+
+        # Verificar que cada campo obligatorio tiene un valor no vacío
+        for field in MINIMUM_FIELDS:
+            # Obtener el valor del campo
+            value = getattr(new_reservation, field)
+            assert value, f"El campo '{
+                field}' está vacío o no tiene un valor válido"
