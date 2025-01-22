@@ -16,3 +16,7 @@ uv.lock
 # Virtual environments
 .venv
 .env
+
+# Coverage
+.coveragerc
+.coverage
