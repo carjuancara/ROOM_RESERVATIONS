@@ -15,4 +15,5 @@ dependencies = [
     "psycopg2>=2.9.10",
     "django-decouple>=2.1",
     "pytest-django>=4.9.0",
+    "pytest-cov>=6.0.0",
 ]
