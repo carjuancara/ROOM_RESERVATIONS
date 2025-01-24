@@ -66,7 +66,7 @@ class TestReservationView:
 
         response = api_client.get(api_url, format="json")
         resp = response.json()
-        print('resp: ', resp)
+
         assert resp[0]["date_in"] == "2025-01-01"
         assert resp[0]["date_out"] == "2025-01-05"
         assert resp[0]["status"] == "pending"
