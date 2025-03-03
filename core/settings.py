@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 from decouple import config
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,12 +40,31 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "rest_framework",
+    "rest_framework_simplejwt",
     'drf_spectacular',
     'reservations',
+    "phonenumber_field",
 ]
 
 REST_FRAMEWORK = {
-    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema"
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+}
+
+SIMPLE_JWT = {
+    # Tiempo de vida corto para el token de acceso
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    # Tiempo de vida más largo para el token de refresco
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
+    # Genera un nuevo token de refresco cada vez que se usa
+    'ROTATE_REFRESH_TOKENS': True,
+    # Añade tokens de refresco usados a una lista negra
+    'BLACKLIST_AFTER_ROTATION': True,
+    'ALGORITHM': 'HS256',                           # Algoritmo de firma seguro
+    'SIGNING_KEY': config('SIGNING_KEY'),           # Clave secreta fuerte
+    'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
 MIDDLEWARE = [
