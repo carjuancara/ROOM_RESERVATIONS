@@ -74,12 +74,12 @@ class Reservation(models.Model):
     status = models.CharField(
         default='pending', choices=STATUS_RESERVATION, max_length=9)
     total_price = models.DecimalField(max_digits=8, decimal_places=2)
-    created_at = models.DateField()
-    updated_at = models.DateField()
+    created_at = models.DateField(auto_now_add=True)
+    updated_at = models.DateField(auto_now=True)
     client = models.ForeignKey(
         Clients, on_delete=models.CASCADE, related_name='reservations')
     room = models.ForeignKey(
-        Room, on_delete=models.CASCADE, related_name='Reservations')
+        Room, on_delete=models.CASCADE, related_name='reservations')
 
     def __str__(self):
         return self.status

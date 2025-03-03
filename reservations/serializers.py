@@ -5,8 +5,8 @@ from .models import Clients, Room, Reservation
 class ClientSerializer(serializers.ModelSerializer):
     class Meta:
         model = Clients
-        fields = ['name', 'lastname', 'document_number', 'street',
-                  'city', 'state', 'country', 'email', 'phone']
+        fields = ['name', 'lastname', 'document_number',
+                  'street', 'country', 'email', 'phone']
         read_only_fields = ('created_at', )
 
 

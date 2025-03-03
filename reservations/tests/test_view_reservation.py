@@ -2,8 +2,10 @@ import pytest
 from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
-from ..models import Reservation, Room, Clients
+from reservations.models import Reservation, Room, Clients
 from datetime import datetime
+from rest_framework_simplejwt.tokens import RefreshToken
+
 pytestmark = pytest.mark.django_db
 
 
@@ -11,6 +13,16 @@ pytestmark = pytest.mark.django_db
 def api_client():
     """Fixture para instancia de APIClient"""
     return APIClient()
+
+
+@pytest.fixture
+def auth_api_client(api_client, django_user_model):
+    user = django_user_model.objects.create_user(
+        username="testuser", password="testpass")
+    refresh = RefreshToken.for_user(user)
+    api_client.credentials(
+        HTTP_AUTHORIZATION=f'Bearer {str(refresh.access_token)}')
+    return api_client
 
 
 @pytest.fixture
@@ -61,11 +73,15 @@ class TestReservationView:
     def test_create_reservation(self, api_client, new_reservation):
         new_reservation.status == status.HTTP_201_CREATED
 
-    def test_verify_data_return(self, api_client, new_reservation):
+    def test_verify_data_return(self, auth_api_client, new_reservation):
         api_url = reverse('reservations:reservation-list')
 
-        response = api_client.get(api_url, format="json")
+        response = auth_api_client.get(api_url, format="json")
+        # Asegurar que la respuesta es exitosa
+        assert response.status_code == 200, f"Error: {response.json()}"
+
         resp = response.json()
+        print('response', resp)
 
         assert resp[0]["date_in"] == "2025-01-01"
         assert resp[0]["date_out"] == "2025-01-05"
