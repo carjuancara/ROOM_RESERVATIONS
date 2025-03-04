@@ -83,3 +83,24 @@ class Reservation(models.Model):
 
     def __str__(self):
         return self.status
+
+    def clean(self):
+        if self.date_out <= self.date_in:
+            raise ValidationError(
+                "The departure date must be after the arrival date.")
+
+        # Verificar disponibilidad de la habitación
+        overlapping_reservations = Reservation.objects.filter(
+            room=self.room,
+            date_in__lt=self.date_out,
+            date_out__gt=self.date_in,
+        ).exclude(id=self.id)
+
+        if overlapping_reservations.exists():
+            raise ValidationError(
+                "The room is not available for the selected dates.")
+
+        # Verificar capacidad
+        if self.room.capacity < self.number_of_guests:  # Asumiendo que agregas un campo `number_of_guests`
+            raise ValidationError(
+                "The room does not have capacity for the number of guests.")
