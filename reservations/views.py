@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from .models import Clients, Room, Reservation
 from .serializers import ClientSerializer, RoomSerializer, ReservationSerializer
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 
@@ -16,6 +16,14 @@ class RoomViewSet(viewsets.ModelViewSet):
 
     queryset = Room.objects.all()
     serializer_class = RoomSerializer
+
+    # Solo los administradores pueden crear o eliminar habitaciones
+    def get_permissions(self):
+        if self.action in ['create', 'destroy']:
+            permission_classes = [IsAdminUser]
+        else:
+            permission_classes = [IsAuthenticated]
+        return [permission() for permission in permission_classes]
 
 
 class ReservationViewSet(viewsets.ModelViewSet):
