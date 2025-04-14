@@ -1,9 +1,11 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from phonenumber_field.modelfields import PhoneNumberField
+from django.contrib.auth.models import User
 
 
 class Clients(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     name = models.CharField(max_length=50)
     lastname = models.CharField(max_length=50)
     document_number = models.CharField(max_length=15)
@@ -26,8 +28,14 @@ class Clients(models.Model):
 
 
 def validate_amenities(value):
-    required_keys = {'wifi', 'air_conditioning',
-                     'minibar', 'jacuzzi', 'tv', 'breakfast_included'}
+    required_keys = {
+        'wifi',
+        'air_conditioning',
+        'minibar',
+        'jacuzzi',
+        'tv',
+        'breakfast_included'
+    }
     if not all(key in value for key in required_keys):
         raise ValidationError("Faltan claves requeridas en los amenities.")
 
@@ -72,7 +80,10 @@ class Reservation(models.Model):
     date_in = models.DateField()
     date_out = models.DateField()
     status = models.CharField(
-        default='pending', choices=STATUS_RESERVATION, max_length=9)
+        default='pending',
+        choices=STATUS_RESERVATION,
+        max_length=9
+    )
     total_price = models.DecimalField(max_digits=8, decimal_places=2)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)

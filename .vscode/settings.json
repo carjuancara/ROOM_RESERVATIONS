@@ -2,5 +2,22 @@
     "conventionalCommits.scopes": [
         "DB",
         "TESTS"
-    ]
+    ],
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "askForPassword": true,
+            "driver": "PostgreSQL",
+            "name": "POSTGRESsql",
+            "database": "reservations",
+            "username": "postgres"
+        }
+    ],
+    "python.testing.pytestArgs": [
+        "reservations"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
 }
