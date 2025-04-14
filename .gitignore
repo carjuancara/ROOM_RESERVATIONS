@@ -6,6 +6,9 @@ dist/
 wheels/
 *.egg-info
 
+# VSC Settings
+settings.json
+
 # Archivos de migración de Django
 */migrations/*
 !*/migrations/__init__.py
@@ -20,3 +23,7 @@ uv.lock
 # Coverage
 .coveragerc
 .coverage
+
+# PostgreSQL session
+POSTGRESsql.session.sql
+
