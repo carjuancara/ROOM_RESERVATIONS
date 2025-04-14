@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "rest_framework",
     "rest_framework_simplejwt",
+    "rest_framework_simplejwt.token_blacklist",
     'drf_spectacular',
     'reservations',
     "phonenumber_field",
@@ -55,7 +56,7 @@ REST_FRAMEWORK = {
 
 SIMPLE_JWT = {
     # Tiempo de vida corto para el token de acceso
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=120),
     # Tiempo de vida más largo para el token de refresco
     'REFRESH_TOKEN_LIFETIME': timedelta(days=30),
     # Genera un nuevo token de refresco cada vez que se usa

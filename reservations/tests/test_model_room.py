@@ -2,6 +2,15 @@ import pytest
 from decimal import Decimal
 from reservations.models import Room
 
+amenities = {
+    'wifi': True,
+    'air_conditioning': True,
+    'minibar': False,
+    'jacuzzi': False,
+    'tv': True,
+    'breakfast_included': True
+}
+
 
 @pytest.fixture
 def new_room():
@@ -13,10 +22,7 @@ def new_room():
         status='available',
         description='descripcion de la habitacion',
         capacity=4,
-        amenities={'wifi': True, 'air_conditioning': True, 'minibar': False,
-                   'jacuzzi': False, 'tv': True, 'breakfast_included': True}
-
-    )
+        amenities=amenities)
 
 
 @pytest.mark.django_db
