@@ -79,12 +79,13 @@ class Reservation(models.Model):
 
     date_in = models.DateField()
     date_out = models.DateField()
+    number_of_guests = models.IntegerField(default=1)
     status = models.CharField(
         default='pending',
         choices=STATUS_RESERVATION,
         max_length=9
     )
-    total_price = models.DecimalField(max_digits=8, decimal_places=2)
+    total_price = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
     created_at = models.DateField(auto_now_add=True)
     updated_at = models.DateField(auto_now=True)
     client = models.ForeignKey(
@@ -100,18 +101,38 @@ class Reservation(models.Model):
             raise ValidationError(
                 "The departure date must be after the arrival date.")
 
+        # Verificar que el número de huéspedes sea positivo
+        if self.number_of_guests <= 0:
+            raise ValidationError(
+                "The number of guests must be at least 1.")
+
         # Verificar disponibilidad de la habitación
         overlapping_reservations = Reservation.objects.filter(
             room=self.room,
             date_in__lt=self.date_out,
             date_out__gt=self.date_in,
+            status__in=['pending', 'confirmed']
         ).exclude(id=self.id)
 
         if overlapping_reservations.exists():
             raise ValidationError(
                 "The room is not available for the selected dates.")
 
+        # Verificar que la habitación esté disponible (no en mantenimiento o limpieza)
+        if self.room.status not in ['available']:
+            raise ValidationError(
+                "The room is not available due to its current status.")
+
         # Verificar capacidad
-        if self.room.capacity < self.number_of_guests:  # Asumiendo que agregas un campo `number_of_guests`
+        if self.room.capacity < self.number_of_guests:
             raise ValidationError(
                 "The room does not have capacity for the number of guests.")
+
+    def save(self, *args, **kwargs):
+        # Calcular precio total automáticamente
+        if not self.total_price:
+            days = (self.date_out - self.date_in).days
+            self.total_price = days * self.room.price_for_night
+
+        self.full_clean()
+        super().save(*args, **kwargs)
