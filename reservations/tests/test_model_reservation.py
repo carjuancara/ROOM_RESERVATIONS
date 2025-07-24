@@ -2,6 +2,7 @@ import pytest
 from reservations.models import Reservation, Clients, Room
 from datetime import datetime, date
 from decimal import Decimal
+from django.core.exceptions import ValidationError
 
 
 @pytest.fixture
@@ -23,7 +24,7 @@ def new_reservation():
     room = Room.objects.create(
         number=1,
         type='single',
-        price_for_night=100.24,
+        price_for_night=Decimal('100.00'),
         is_reserved=False,
         status='available',
         description='descripcion de la habitacion',
@@ -35,14 +36,12 @@ def new_reservation():
 
     # Creamos una reserva para ese cliente
     reservation = Reservation.objects.create(
-        date_in="2025-01-01",
-        date_out="2025-01-05",
+        date_in=date(2025, 1, 1),
+        date_out=date(2025, 1, 5),
+        number_of_guests=2,
         status="pending",
-        total_price=500.00,
         client=client,  # Relación con el cliente
-        room_id=room.id,  # Suponiendo que ya tienes una habitación con ID 1
-        created_at=datetime.now(),  # Asignar el valor de la fecha de creación
-        updated_at=datetime.now(),
+        room=room,  # Usar la instancia room directamente
     )
 
     return reservation
