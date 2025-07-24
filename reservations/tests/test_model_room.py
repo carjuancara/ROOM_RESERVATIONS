@@ -17,7 +17,7 @@ def new_room():
     return Room.objects.create(
         number=1,
         type='single',
-        price_for_night=100.24,
+        price_for_night=Decimal('100.00'),
         is_reserved=False,
         status='available',
         description='descripcion de la habitacion',
