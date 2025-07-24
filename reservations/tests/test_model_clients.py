@@ -1,6 +1,7 @@
 from reservations.models import Clients, Reservation, Room
 from django.core.exceptions import ValidationError
-from datetime import datetime
+from datetime import datetime, date
+from decimal import Decimal
 
 import pytest
 
@@ -123,7 +124,7 @@ class TestClients:
         room = Room.objects.create(
             number=1,
             type='single',
-            price_for_night=100.24,
+            price_for_night=Decimal('100.00'),
             is_reserved=False,
             status='available',
             description='descripcion de la habitacion',
@@ -135,14 +136,12 @@ class TestClients:
 
         # Creamos una reserva para ese cliente
         reservation = Reservation.objects.create(
-            date_in="2025-01-01",
-            date_out="2025-01-05",
+            date_in=date(2025, 1, 1),
+            date_out=date(2025, 1, 5),
+            number_of_guests=2,
             status="pending",
-            total_price=500.00,
             client=client,  # Relación con el cliente
-            room_id=1,  # Suponiendo que ya tienes una habitación con ID 1
-            created_at=datetime.now(),  # Asignar el valor de la fecha de creación
-            updated_at=datetime.now(),
+            room=room,  # Usar la instancia room creada arriba
         )
 
         # Verificamos que la reserva está asociada correctamente con el cliente
@@ -154,7 +153,9 @@ class TestClients:
         assert reservation in client.reservations.all()
 
         # Aseguramos que los datos de la reserva son correctos
-        assert reservation.date_in == "2025-01-01"
-        assert reservation.date_out == "2025-01-05"
+        assert reservation.date_in == date(2025, 1, 1)
+        assert reservation.date_out == date(2025, 1, 5)
         assert reservation.status == "pending"
-        assert reservation.total_price == 500.00
+        assert reservation.number_of_guests == 2
+        # El precio total se calcula automáticamente: 4 noches * 100.00 = 400.00
+        assert reservation.total_price == Decimal('400.00')
